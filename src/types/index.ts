@@ -95,6 +95,25 @@ export interface ThemeColors {
   inputBackground: string;
 }
 
+export interface FeedMedia {
+  type: 'image' | 'video';
+  url: string;
+  aspectRatio?: number;
+}
+
+export interface FeedPost {
+  id: string;
+  user: UserProfile & { handle: string; verified?: boolean };
+  content: string;
+  timestamp: string;
+  media?: FeedMedia[];
+  likes: number;
+  reposts: number;
+  comments: number;
+  views: number;
+  category: 'foryou' | 'radar' | 'surge' | 'kols';
+}
+
 export type RootStackParamList = {
   Splash: undefined;
   MainTabs: undefined;
@@ -104,6 +123,7 @@ export type RootStackParamList = {
 export type TabParamList = {
   Home: undefined;
   Portfolio: undefined;
+  Feed: undefined;
   Search: undefined;
   Profile: undefined;
 };

@@ -7,6 +7,7 @@ import { RootStackParamList, TabParamList } from '../types';
 import SplashScreen from '../screens/SplashScreen';
 import HomeScreen from '../screens/HomeScreen';
 import PortfolioScreen from '../screens/PortfolioScreen';
+import FeedScreen from '../screens/FeedScreen';
 import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import TokenDetailScreen from '../screens/TokenDetailScreen';
@@ -27,6 +28,7 @@ function MainTabs() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Portfolio" component={PortfolioScreen} />
+      <Tab.Screen name="Feed" component={FeedScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>

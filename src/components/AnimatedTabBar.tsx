@@ -48,6 +48,7 @@ export default function AnimatedTabBar({ state, descriptors, navigation }: Botto
         let iconName: keyof typeof Ionicons.glyphMap = 'home-outline';
         if (route.name === 'Home') iconName = isFocused ? 'home' : 'home-outline';
         else if (route.name === 'Portfolio') iconName = isFocused ? 'pie-chart' : 'pie-chart-outline';
+        else if (route.name === 'Feed') iconName = isFocused ? 'logo-rss' : 'logo-rss';
         else if (route.name === 'Search') iconName = isFocused ? 'search' : 'search-outline';
         else if (route.name === 'Profile') iconName = isFocused ? 'person' : 'person-outline';
 
