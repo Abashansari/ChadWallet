@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../theme/ThemeContext';
 import { mockUser } from '../mocks/user';
 import { SPACING, RADIUS, FONT_SIZE } from '../constants/colors';
+import { useAuthStore } from '../store/authStore';
 
 interface SettingItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -19,6 +20,7 @@ interface SettingItemProps {
 export default function ProfileScreen() {
   const { colors, isDark, toggleTheme } = useTheme();
   const insets = useSafeAreaInsets();
+  const { user, logout } = useAuthStore();
 
   const SettingItem = ({
     icon,
@@ -75,9 +77,9 @@ export default function ProfileScreen() {
           <View style={[styles.avatarContainer, { backgroundColor: colors.surfaceElevated }]}>
             <Text style={styles.avatarEmoji}>{mockUser.profileEmoji}</Text>
           </View>
-          <Text style={[styles.username, { color: colors.textPrimary }]}>{mockUser.username}</Text>
+          <Text style={[styles.username, { color: colors.textPrimary }]}>{user?.email?.split('@')[0] || mockUser.username}</Text>
           <Text style={[styles.walletAddress, { color: colors.textSecondary }]}>
-            {mockUser.walletAddress}
+            {user?.email || mockUser.walletAddress}
           </Text>
         </View>
 
@@ -140,7 +142,7 @@ export default function ProfileScreen() {
               label="Log Out"
               isDestructive
               showChevron={false}
-              onPress={() => console.log('Logout')}
+              onPress={logout}
             />
           </View>
         </View>

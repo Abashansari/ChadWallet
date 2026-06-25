@@ -116,6 +116,8 @@ export interface FeedPost {
 
 export type RootStackParamList = {
   Splash: undefined;
+  Login: undefined;
+  OTPVerification: { email: string };
   MainTabs: undefined;
   TokenDetail: { token: Token };
 };

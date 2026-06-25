@@ -11,6 +11,11 @@ import FeedScreen from '../screens/FeedScreen';
 import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import TokenDetailScreen from '../screens/TokenDetailScreen';
+import LoginScreen from '../screens/LoginScreen';
+import OTPVerificationScreen from '../screens/OTPVerificationScreen';
+
+// Store
+import { useAuthStore } from '../store/authStore';
 
 // Components
 import AnimatedTabBar from '../components/AnimatedTabBar';
@@ -36,6 +41,8 @@ function MainTabs() {
 }
 
 export default function AppNavigator() {
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+
   return (
     <Stack.Navigator
       initialRouteName="Splash"
@@ -45,14 +52,34 @@ export default function AppNavigator() {
       }}
     >
       <Stack.Screen name="Splash" component={SplashScreen} />
-      <Stack.Screen name="MainTabs" component={MainTabs} />
-      <Stack.Screen 
-        name="TokenDetail" 
-        component={TokenDetailScreen}
-        options={{
-          animation: 'slide_from_right',
-        }}
-      />
+      
+      {!isAuthenticated ? (
+        // Auth Stack
+        <Stack.Group>
+          <Stack.Screen 
+            name="Login" 
+            component={LoginScreen}
+            options={{ animation: 'fade' }}
+          />
+          <Stack.Screen 
+            name="OTPVerification" 
+            component={OTPVerificationScreen}
+            options={{ animation: 'slide_from_right' }}
+          />
+        </Stack.Group>
+      ) : (
+        // Protected Stack
+        <Stack.Group>
+          <Stack.Screen name="MainTabs" component={MainTabs} />
+          <Stack.Screen 
+            name="TokenDetail" 
+            component={TokenDetailScreen}
+            options={{
+              animation: 'slide_from_right',
+            }}
+          />
+        </Stack.Group>
+      )}
     </Stack.Navigator>
   );
 }

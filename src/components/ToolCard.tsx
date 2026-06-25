@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { View, Text, StyleSheet, Pressable, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../theme/ThemeContext';
 import { SPACING, RADIUS, FONT_SIZE } from '../constants/colors';
@@ -15,20 +14,26 @@ interface ToolCardProps {
 
 export default function ToolCard({ tool, onPress }: ToolCardProps) {
   const { colors } = useTheme();
-  const scale = useSharedValue(1);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
+  const scale = React.useRef(new Animated.Value(1)).current;
 
   return (
     <AnimatedPressable
-      style={[animatedStyle, styles.container]}
+      style={[styles.container, { transform: [{ scale }] }]}
       onPressIn={() => {
-        scale.value = withSpring(0.97, { damping: 15, stiffness: 300 });
+        Animated.spring(scale, {
+          toValue: 0.97,
+          friction: 5,
+          tension: 300,
+          useNativeDriver: true,
+        }).start();
       }}
       onPressOut={() => {
-        scale.value = withSpring(1, { damping: 15, stiffness: 300 });
+        Animated.spring(scale, {
+          toValue: 1,
+          friction: 5,
+          tension: 300,
+          useNativeDriver: true,
+        }).start();
       }}
       onPress={() => onPress?.(tool)}
     >

@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { View, Text, StyleSheet, Pressable, Animated } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import { SPACING, RADIUS, FONT_SIZE } from '../constants/colors';
 
@@ -16,11 +15,7 @@ interface StatCardProps {
 
 export default function StatCard({ label, value, icon, trend, compact = false }: StatCardProps) {
   const { colors } = useTheme();
-  const scale = useSharedValue(1);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
+  const scale = React.useRef(new Animated.Value(1)).current;
 
   const trendColor = trend === 'up'
     ? colors.positive
@@ -31,15 +26,25 @@ export default function StatCard({ label, value, icon, trend, compact = false }:
   return (
     <AnimatedPressable
       style={[
-        animatedStyle,
         compact ? styles.compactContainer : styles.container,
         { backgroundColor: colors.surface, borderColor: colors.border },
+        { transform: [{ scale }] }
       ]}
       onPressIn={() => {
-        scale.value = withSpring(0.96, { damping: 15, stiffness: 300 });
+        Animated.spring(scale, {
+          toValue: 0.96,
+          friction: 5,
+          tension: 300,
+          useNativeDriver: true,
+        }).start();
       }}
       onPressOut={() => {
-        scale.value = withSpring(1, { damping: 15, stiffness: 300 });
+        Animated.spring(scale, {
+          toValue: 1,
+          friction: 5,
+          tension: 300,
+          useNativeDriver: true,
+        }).start();
       }}
     >
       {icon && <Text style={styles.icon}>{icon}</Text>}

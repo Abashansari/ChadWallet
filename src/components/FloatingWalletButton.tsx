@@ -1,13 +1,6 @@
 import React from 'react';
 import { StyleSheet, Pressable } from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withRepeat,
-  withSequence,
-  withTiming,
-} from 'react-native-reanimated';
+import { Animated, Easing } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../theme/ThemeContext';
 import { RADIUS, SPACING } from '../constants/colors';
@@ -20,38 +13,51 @@ interface FloatingWalletButtonProps {
 
 export default function FloatingWalletButton({ onPress }: FloatingWalletButtonProps) {
   const { colors } = useTheme();
-  const scale = useSharedValue(1);
+  const scale = React.useRef(new Animated.Value(1)).current;
 
   React.useEffect(() => {
     // Subtle breathing animation
-    scale.value = withRepeat(
-      withSequence(
-        withTiming(1.05, { duration: 1500 }),
-        withTiming(1, { duration: 1500 })
-      ),
-      -1,
-      true
-    );
-  }, []);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(scale, {
+          toValue: 1.05,
+          duration: 1500,
+          useNativeDriver: true,
+          easing: Easing.inOut(Easing.ease),
+        }),
+        Animated.timing(scale, {
+          toValue: 1,
+          duration: 1500,
+          useNativeDriver: true,
+          easing: Easing.inOut(Easing.ease),
+        })
+      ])
+    ).start();
+  }, [scale]);
 
   return (
     <AnimatedPressable
       style={[
         styles.container,
-        animatedStyle,
         { backgroundColor: colors.accent, shadowColor: colors.accent },
+        { transform: [{ scale }] }
       ]}
       onPress={() => {
         onPress();
         // Feedback animation
-        scale.value = withSequence(
-          withTiming(0.9, { duration: 100 }),
-          withSpring(1, { damping: 10, stiffness: 300 })
-        );
+        Animated.sequence([
+          Animated.timing(scale, {
+            toValue: 0.9,
+            duration: 100,
+            useNativeDriver: true,
+          }),
+          Animated.spring(scale, {
+            toValue: 1,
+            friction: 5,
+            tension: 300,
+            useNativeDriver: true,
+          })
+        ]).start();
       }}
     >
       <Ionicons name="wallet-outline" size={28} color="#FFFFFF" />

@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { View, Text, StyleSheet, Pressable, Animated } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import { SPACING, RADIUS, FONT_SIZE } from '../constants/colors';
 import { Token } from '../types';
@@ -17,11 +16,7 @@ interface TokenCardProps {
 
 export default function TokenCard({ token, onPress, index = 0 }: TokenCardProps) {
   const { colors } = useTheme();
-  const scale = useSharedValue(1);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
+  const scale = React.useRef(new Animated.Value(1)).current;
 
   const isPositive = token.change24h >= 0;
   const changeColor = isPositive ? colors.positive : colors.negative;
@@ -32,18 +27,28 @@ export default function TokenCard({ token, onPress, index = 0 }: TokenCardProps)
   return (
     <AnimatedPressable
       style={[
-        animatedStyle,
         styles.container,
         {
           backgroundColor: colors.card,
           borderBottomColor: colors.border,
+          transform: [{ scale }],
         },
       ]}
       onPressIn={() => {
-        scale.value = withSpring(0.97, { damping: 15, stiffness: 300 });
+        Animated.spring(scale, {
+          toValue: 0.97,
+          friction: 5,
+          tension: 300,
+          useNativeDriver: true,
+        }).start();
       }}
       onPressOut={() => {
-        scale.value = withSpring(1, { damping: 15, stiffness: 300 });
+        Animated.spring(scale, {
+          toValue: 1,
+          friction: 5,
+          tension: 300,
+          useNativeDriver: true,
+        }).start();
       }}
       onPress={() => onPress(token)}
     >
