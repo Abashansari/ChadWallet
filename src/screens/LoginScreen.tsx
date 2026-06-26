@@ -9,6 +9,7 @@ import { useTheme } from '../theme/ThemeContext';
 import { SPACING, RADIUS } from '../constants/colors';
 import { RootStackParamList } from '../types';
 import { useAuthStore } from '../store/authStore';
+import PrimaryButton from '../components/PrimaryButton';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -84,22 +85,12 @@ export default function LoginScreen({ navigation }: Props) {
             />
           </View>
 
-          <Pressable 
-            style={({ pressed }) => [
-              styles.primaryButton, 
-              { backgroundColor: colors.primary },
-              pressed && { opacity: 0.8 },
-              !email && { opacity: 0.5 }
-            ]}
+          <PrimaryButton
+            title="Continue with Email"
             onPress={handleEmailLogin}
-            disabled={!email || isLoading}
-          >
-            {isLoading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.primaryButtonText}>Continue with Email</Text>
-            )}
-          </Pressable>
+            disabled={!email}
+            isLoading={isLoading}
+          />
         </View>
 
         <View style={styles.footerContainer}>

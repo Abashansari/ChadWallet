@@ -9,6 +9,7 @@ import { useTheme } from '../theme/ThemeContext';
 import { SPACING, RADIUS } from '../constants/colors';
 import { RootStackParamList } from '../types';
 import { useAuthStore } from '../store/authStore';
+import PrimaryButton from '../components/PrimaryButton';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OTPVerification'>;
 
@@ -124,22 +125,12 @@ export default function OTPVerificationScreen({ route, navigation }: Props) {
             ) : null}
           </View>
 
-          <Pressable 
-            style={({ pressed }) => [
-              styles.primaryButton, 
-              { backgroundColor: colors.primary },
-              pressed && { opacity: 0.8 },
-              otp.length !== 6 && { opacity: 0.5 }
-            ]}
+          <PrimaryButton
+            title="Verify & Continue"
             onPress={handleVerify}
-            disabled={otp.length !== 6 || isLoading}
-          >
-            {isLoading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.primaryButtonText}>Verify & Continue</Text>
-            )}
-          </Pressable>
+            disabled={otp.length !== 6}
+            isLoading={isLoading}
+          />
         </View>
 
         <View style={styles.footerContainer}>
